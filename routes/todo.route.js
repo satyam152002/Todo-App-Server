@@ -22,7 +22,7 @@ router.get('/',async (req,res)=>{
 
 
 router.post('/', async (req,res)=>{
-    const { task }=req.body
+    const { task,todoID }=req.body
     if(task==null)
         return res.status(400).send("Invalid Request")
     try
@@ -31,8 +31,10 @@ router.post('/', async (req,res)=>{
         let todo=new Todo({
             task:task,
             user:userID,
+            todoID:todoID
         })
         todo=await todo.save()
+        console.log(todo)
         return res.status(201).json(todo)
     }
     catch(e)
@@ -48,7 +50,7 @@ router.patch('/:id',async (req,res)=>{
     const todoID=req.params.id
     try
     {
-        let todo=await Todo.findOne({_id:todoID})
+        let todo=await Todo.findOne({todoID:todoID})
         if(todo==null)
             return res.status(400).send(`No Todo Exists With ID :${todoID}`)
         if(todo.user!=req.session.user?.id)

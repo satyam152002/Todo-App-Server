@@ -2,6 +2,11 @@ const mongoose=require('mongoose')
 const User=require('./user.model')
 
 const todoSchema=new mongoose.Schema({
+    todoID:{
+        type:String,
+        required:true,
+        unique:true
+    },
     task:{
         type:String,
         required:true,
