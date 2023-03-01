@@ -22,8 +22,8 @@ router.get('/',async (req,res)=>{
 
 
 router.post('/', async (req,res)=>{
-    const { task,todoID }=req.body
-    if(task==null)
+    const { task,todoID,dueDate }=req.body
+    if(task==null||todoID==null||dueDate==null)
         return res.status(400).send("Invalid Request")
     try
     {
@@ -31,7 +31,8 @@ router.post('/', async (req,res)=>{
         let todo=new Todo({
             task:task,
             user:userID,
-            todoID:todoID
+            todoID:todoID,
+            dueDate:dueDate
         })
         todo=await todo.save()
         console.log(todo)
@@ -65,6 +66,22 @@ router.patch('/:id',async (req,res)=>{
         return res.sendStatus(500)
     }
 
+})
+router.delete('/:id',async (req,res)=>{
+    const todoID=req.params.id;
+    try
+    {
+        let todo=await Todo.findOne({todoID:todoID})
+        console.log(todo)
+        if(todo===null) 
+            return res.status(404).send("Todo Not Found")
+        await todo.delete()
+        return res.status(200).send("Todo Deleted Successfully")
+    }
+    catch(e)
+    {
+        return res.sendStatus(500)
+    }
 })
 
 module.exports=router
